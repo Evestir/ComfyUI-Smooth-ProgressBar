@@ -7,4 +7,5 @@ Installation
 2. Open ***comfy/utils.py***
 3. In the utils.py, remove **everything** from the beginning of `class ProgressBar:`
 4. Put the code I provided
-5. That's It! Enjoy!
+5. Restart/Relaunch ComfyUI
+6. That's It! Enjoy!

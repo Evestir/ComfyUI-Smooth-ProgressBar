@@ -26,10 +26,16 @@ def is_odd(n):
         return False
     else:
         return True
+    
+def is_undivisible_3(n):
+    if n % 3 == 0:
+        return False
+    else:
+        return True
 
 #--------------- Configuration ----------------#
-sleepTime = 0.0025
-steps = 100
+sleepTime = 0.0015
+steps = 200
 multiplyFactor = math.floor(10000 / steps) / 10000
 #----------------------------------------------#
 
@@ -43,28 +49,29 @@ class ProgressBar:
     def update_absolute(self, value, total=None, preview=None):
         def hook():
             if self.hook is not None:
-                    self.hook(self.current, self.total, preview)
+                self.hook(self.current, self.total, preview)
         if total is not None:
             self.total = total
         if value > self.total:
             value = self.total
 
-        # Display progress only if the completed steps are even.
-        if is_odd(value) and value is not total:
+        # Display progress only when the completed steps are two compared to the period when the last animation happend.
+        if is_undivisible_3(value) and value is not total:
             return
         def animate():
             origin = self.current
             diff = value - origin
             for i in range(steps):
-                self.current = origin + (easeInOutBack(i * multiplyFactor) * diff)
+                self.current = origin + (easeOutCirc(i * multiplyFactor) * diff)
                 sleep(sleepTime)
                 hook()
-            self.current = value
-            if value == total: # Once the progress bar reaches 100%, then this motion will be played.
+            self.current = value # Ensure
+            #print(f" value {value} total {total} self.current {self.current}")
+            if value == total: # Once the progress bar reaches 100%, then this motion will be played.     
                 for i in range(steps):
                     self.current = total - (BezierBlend(i * multiplyFactor) * total)
                     hook()
-                    sleep(sleepTime + 0.005)
+                    sleep(sleepTime)
         thread = threading.Thread(target=animate)
         thread.start()
         if value == total:
